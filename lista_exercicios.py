@@ -1,3 +1,6 @@
+from random import randint
+
+
 class Bola:
     def __init__(self, cor, circunferencia, material) -> None:
         self.cor = cor
@@ -128,11 +131,11 @@ class TV:
 
 
 class BichinhoVirtual:
-    def __init__(self, nome, fome, saude, idade) -> None:
+    def __init__(self, nome, fome=None, saude=None, idade=None):
         self.nome = nome
-        self.fome = fome
-        self.saude = saude
-        self.idade = idade
+        self.fome = fome or randint(1, 10)
+        self.saude = saude or randint(1, 10)
+        self.idade = idade or randint(1, 10)
 
     def retornar_nome(self):
         return self.nome
@@ -149,6 +152,19 @@ class BichinhoVirtual:
     @property
     def humor(self):
         return self.saude + self.fome
+
+    def alimentar(self):
+        self.fome *= 0.75
+
+    def brincar(self):
+        self.fome *= 1.25
+        self.saude *= 1.25
+
+    def ouvir(self):
+        print(f"{self.nome} diz: Oi!")
+
+    def __str__(self):
+        return f"Nome: {self.nome}; Fome: {self.fome}; Saúde: {self.saude}; Idade: {self.idade}"
 
 
 class Macaco:
@@ -372,3 +388,104 @@ class Funcionario:
 
     def aumenta_salario(self, percentual):
         self.__salario *= 1 + percentual / 100
+
+
+def funcionario():
+    harry = Funcionario("Harry", 1000)
+    harry.aumenta_salario(10)
+
+
+class BichinhoVirtualPlus(BichinhoVirtual):
+    def __init__(
+        self, nome, fome=None, saude=None, idade=None, tempo_brincando=None, comida=None
+    ):
+        super().__init__(nome, fome, saude, idade)
+        self.tempo_brincando = tempo_brincando
+        self.comida = comida
+
+    def alimentar(self):
+        self.fome *= 0.9
+
+    def brincar(self):
+        self.fome *= 1.1
+        self.saude *= 1.1
+
+    def ouvir(self):
+        print(f"{self.nome} diz: Olá! Eu sou um BichinhoVirtualPlus.")
+
+    def __str__(self):
+        return super().__str__()
+
+
+def bichinho_virtual_plus():
+    def exibir_menu():
+        print("1 - Alimentar todos os bichinhos")
+        print("2 - Brincar com todos os bichinhos")
+        print("3 - Ouvir todos os bichinhos")
+        print("4 - Adicionar novo bichinho")
+        print("5 - Sair")
+
+    fazenda = []
+
+    # criando os objetos bichinho e adicionando à lista fazenda
+    fazenda.append(
+        BichinhoVirtualPlus(
+            "Bichinho 1",
+            randint(0, 10),
+            randint(0, 10),
+            randint(0, 10),
+            randint(0, 10),
+            randint(0, 10),
+        )
+    )
+    fazenda.append(
+        BichinhoVirtualPlus(
+            "Bichinho 2",
+            randint(0, 10),
+            randint(0, 10),
+            randint(0, 10),
+            randint(0, 10),
+            randint(0, 10),
+        )
+    )
+    fazenda.append(
+        BichinhoVirtualPlus(
+            "Bichinho 3",
+            randint(0, 10),
+            randint(0, 10),
+            randint(0, 10),
+            randint(0, 10),
+            randint(0, 10),
+        )
+    )
+
+    opcao = 0
+    while opcao != 5:
+        exibir_menu()
+        opcao = int(input("Escolha uma opção: "))
+        if opcao == 1:
+            for bichinho in fazenda:
+                bichinho.alimentar()
+            print("Todos os bichinhos foram alimentados!")
+        elif opcao == 2:
+            for bichinho in fazenda:
+                bichinho.brincar()
+            print("Todos os bichinhos brincaram!")
+        elif opcao == 3:
+            for bichinho in fazenda:
+                bichinho.falar()
+        elif opcao == 4:
+            nome = input("Digite o nome do bichinho: ")
+            fome = randint(0, 10)
+            saude = randint(0, 10)
+            idade = randint(0, 10)
+            tempo_brincando = randint(0, 10)
+            comida = randint(0, 10)
+            fazenda.append(
+                BichinhoVirtualPlus(nome, fome, saude, idade, tempo_brincando, comida)
+            )
+            print(f"O bichinho {nome} foi adicionado à fazenda!")
+        elif opcao == 5:
+            print("Saindo...")
+        else:
+            print("Opção inválida!")
