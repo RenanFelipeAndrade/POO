@@ -190,7 +190,7 @@ class ContaInvestimento(ContaCorrente):
 
 
 class Empregado:
-    def __init__(self, codigo, nome, email, salario) -> None:
+    def __init__(self, nome, email, salario, codigo=None) -> None:
         self.__codigo = codigo
         self.__nome = nome
         self.__email = email
@@ -200,9 +200,171 @@ class Empregado:
         return self.__salario
 
     def aumenta_salario(self, percentual):
-        self.__salario *= percentual / 100
+        self.__salario += self.__salario * (percentual / 100)
         return self.__salario
 
 
-class Chefe:
-    pass
+class Chefe(Empregado):
+    def __init__(self, nome, email, salario, beneficio, codigo=None) -> None:
+        super().__init__(nome, email, salario, codigo=codigo)
+        self.__beneficio = beneficio
+
+    def aumenta_salario(self, percentual):
+        salario = self.get_salario()
+        acrescimo = (self.__beneficio / salario) * 100 + percentual
+        salario_atual = super().aumenta_salario(acrescimo)
+        return salario_atual
+
+
+class Estagiario(Empregado):
+    def __init__(self, nome, email, salario, desconto, codigo=None) -> None:
+        super().__init__(nome, email, salario, codigo)
+        self.__desconto = desconto
+
+    def aumenta_salario(self, percentual):
+        salario = self.get_salario()
+        acrescimo = percentual - (self.__desconto / salario) * 100
+        salario_atual = super().aumenta_salario(acrescimo)
+        return salario_atual
+
+
+class Ingresso:
+    def __init__(self, valor) -> None:
+        self.__valor = valor
+
+    def imprime_valor(self):
+        return self.__valor
+
+
+class VIP(Ingresso):
+    def __init__(self, valor) -> None:
+        valor *= 1.10
+        super().__init__(valor)
+
+    def imprime_valor(self):
+        return super().imprime_valor()
+
+
+class Normal(Ingresso):
+    def __init__(self, valor) -> None:
+        super().__init__(valor)
+
+    def categoria(self):
+        print(self.categoria)
+
+
+class CamaroteInferior(VIP):
+    def __init__(self, valor, localizacao) -> None:
+        super().__init__(valor)
+        self.__localizacao = localizacao
+
+    def get_localizacao(self):
+        return self.__localizacao
+
+    def show_localizacao(self):
+        print(self.__localizacao)
+
+
+class CamaroteSuperior(VIP):
+    def __init__(self, valor, localizacao) -> None:
+        valor *= 1.10
+        super().__init__(valor)
+        self.__localizacao = localizacao
+
+    def get_localizacao(self):
+        return self.__localizacao
+
+    def show_localizacao(self):
+        print(self.__localizacao)
+
+
+class Funcionario:
+    def __init__(self, nome, endereco, telefone, email) -> None:
+        self.__nome = nome
+        self.__endereco = endereco
+        self.__telefone = telefone
+        self.__email = email
+
+    def exibe_dados(self):
+        print(
+            f"Nome: {self.__nome}\nEmail: {self.__email}\nEndereco: {self.__endereco}\nTelefone: {self.__telefone}"
+        )
+
+    def retorna_dados(self):
+        return (self.__nome, self.__email, self.__endereco, self.__telefone)
+
+
+class Assistente(Funcionario):
+    def __init__(self, nome, endereco, telefone, email, matricula, salario) -> None:
+        super().__init__(nome, endereco, telefone, email)
+        self.__matricula = matricula
+        self.__salario = salario
+
+    def get_matricula(self):
+        return self.__matricula
+
+
+class Tecnico(Assistente):
+    def __init__(
+        self, nome, endereco, telefone, email, matricula, salario, bonus
+    ) -> None:
+        super().__init__(
+            nome, endereco, telefone, email, matricula, salario=salario + bonus
+        )
+
+    def exibe_dados(self):
+        nome, _ = self.retorna_dados()
+        matricula = self.get_matricula()
+        print(f"Matrícula: {matricula}\nNome: {nome}")
+
+
+class Administrativo(Assistente):
+    def __init__(
+        self, nome, endereco, telefone, email, matricula, turno, salario
+    ) -> None:
+        self.__turno = turno
+        if turno == "noite":
+            salario *= 1.1
+        super().__init__(nome, endereco, telefone, email, matricula, salario)
+
+    def exibe_dados(self):
+        nome, _ = self.retorna_dados()
+        matricula = self.get_matricula()
+        print(f"Matrícula: {matricula}\nNome: {nome}")
+
+
+class Pessoa:
+    def __init__(self, nome, idade) -> None:
+        self.__nome = nome
+        self.__idade = idade
+
+
+class Rica(Pessoa):
+    def __init__(self, nome, idade, dinheiro) -> None:
+        super().__init__(nome, idade)
+        self.__dinheiro = dinheiro
+
+    def faz_compras(self):
+        self.__dinheiro /= 2
+
+
+class Pobre(Pessoa):
+    def __init__(self, nome, idade) -> None:
+        super().__init__(nome, idade)
+
+    def trabalha(self):
+        print("Trabalhando...")
+
+
+class Mendigo(Pessoa):
+    def __init__(self, nome, idade) -> None:
+        super().__init__(nome, idade)
+
+    def mendiga(self):
+        print("Mendiga...")
+
+
+pobre = Pobre("Renato", "34")
+pobre.trabalha()
+rica = Rica("Vanessa", 40, 1_000_000)
+rica.faz_compras()
